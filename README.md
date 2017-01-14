@@ -1,0 +1,2 @@
+# ADB
+Basic Discord Bot
