@@ -4,6 +4,8 @@ using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
+// MSDN crypto page has a nice RNG
+
 namespace ADB
 {
     public class DiceRoll
@@ -66,7 +68,6 @@ namespace ADB
             //Valid dice sides allowed
             int[] validSides = new int[6] { 4, 6, 8, 10, 12, 20 };
             bool validDice = false;
-
             //Check if roll request is greater than 0 but less than allowed amount
             if ((input[0] < validAmt+1) && (input[0] > 0))
             {
