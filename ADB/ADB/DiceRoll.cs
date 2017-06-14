@@ -1,10 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
-// MSDN crypto page has a nice RNG
+// MSDN crypto page has a nice RNG, shamelessly copied
 
 namespace ADB
 {
