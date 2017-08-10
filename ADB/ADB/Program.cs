@@ -157,7 +157,6 @@ namespace ADB
             {
                 if (message.Content.Contains("!ud") && (!message.Author.IsBot))
                 {
-                    //int definitionNum = 0;
 
                     if (message.Content == "!ud " || message.Content == "!ud")
                     {
@@ -168,6 +167,11 @@ namespace ADB
                     string input = (message.Content).Substring(4);
                     UrbanDefine scan = new UrbanDefine();
                     var result = scan.QueryByTerm(input).Result;
+
+                    if (result.ResultType == "no_results")
+                    {
+                        await message.Channel.SendMessageAsync((message.Author).Mention + ": Not defined in Urban Dictionary.");
+                    }
 
                     for (int i = 0; i < result.ItemList.Count; i++)
                     {
@@ -610,7 +614,8 @@ namespace ADB
                 }
             };
 
-
+            //Set Playing message
+            await client.SetGameAsync("!help");
             // Configure the client to use a Bot token, and use our token
             await client.LoginAsync(TokenType.Bot, Credentials.Token);
             // Connect the client to Discord's gateway
