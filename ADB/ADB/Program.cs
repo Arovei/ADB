@@ -19,7 +19,7 @@ namespace ADB
 
         public async Task Run()
         {
-            client = new DiscordSocketClient(new DiscordSocketConfig { AudioMode = Discord.Audio.AudioMode.Outgoing });
+            client = new DiscordSocketClient(new DiscordSocketConfig { });
             bool firstBoot = true;
             report = ReportFile.ReportStorage(report, firstBoot);
             firstBoot = false;
@@ -61,7 +61,9 @@ namespace ADB
                         "  `!reportwipe`\n" + 
                         "   Resets the report back to 0.\n" +
                         "  `!flip`\n" + 
-                        "   Flips a coin. Heads or tails.\n" + 
+                        "   Flips a coin. Heads or tails.\n" +
+                        "  `!ud`\n" +
+                        "   Gets the top three definitions from Urban Dictionary." + 
                         "  `!boop`\n" + 
                         "   Who doesn't like a boop?\n"
                         );
@@ -80,6 +82,8 @@ namespace ADB
                         "   Resets the bunch of numbers n crap.\n" +
                         "  `!flip`\n" +
                         "   You mean you don't have ANY coins?\n" +
+                        "  `!ud`\n" +
+                        "   If you really care what everyone else things a word means.\n" +
                         "  `!boop`\n" +
                         "   This can stay. I like this.\n"
                         );
@@ -94,6 +98,7 @@ namespace ADB
                         "!rollstats\n" +
                         "!report, !reportwipe\n" +
                         "!flip\n" +
+                        "!ud\n" +
                         "!boop\n" +
                         "!help, !halp, !fullhelp\n" +
                         "!ping\n" + 
@@ -145,16 +150,44 @@ namespace ADB
             };
 
             //
+            // Urban Dictionary call
+            //   All Urban Dictionary cs files are found at https://github.com/huming2207/UrbanDict.NET
+            //
+            client.MessageReceived += async (message) =>
+            {
+                if (message.Content.Contains("!ud") && (!message.Author.IsBot))
+                {
+                    //int definitionNum = 0;
+
+                    if (message.Content == "!ud " || message.Content == "!ud")
+                    {
+                        await message.Channel.SendMessageAsync((message.Author).Mention + ": What good is searching for nothing going to do you?");
+                    }
+
+                    List<string> definitions = new List<string>();
+                    string input = (message.Content).Substring(4);
+                    UrbanDefine scan = new UrbanDefine();
+                    var result = scan.QueryByTerm(input).Result;
+
+                    for (int i = 0; i < result.ItemList.Count; i++)
+                    {
+                        definitions.Add(result.ItemList[i].Definition);
+                    }
+
+                    await message.Channel.SendMessageAsync((message.Author).Mention + ": Top three definitions for: `" + input + "`\n```" + definitions[0] + "```\n```" + definitions[1] + "```\n```" + definitions[2]+"```");
+                }
+            };
+
+            //
             // Stat roll call
             //            
             client.MessageReceived += async (message) =>
             {
-                Console.WriteLine(message.Author + " called " + message.Content);
                 if (message.Content.Contains("!rollstats") && (!message.Author.IsBot))
                 {
                     int styleType = 0;
                     string styleWord = "";
-                    if (message.Content == "!rollstats") ;
+                    if (message.Content == "!rollstats")
                     {
                         Console.WriteLine(message.Author + " called " + message.Content + ". Invalid call. Defaulting to 3d6.");
                         await message.Channel.SendMessageAsync("`Defaulting to 3d6.`");
@@ -581,7 +614,7 @@ namespace ADB
             // Configure the client to use a Bot token, and use our token
             await client.LoginAsync(TokenType.Bot, Credentials.Token);
             // Connect the client to Discord's gateway
-            await client.ConnectAsync();
+            await client.StartAsync();
 
             // Block this task until the program is exited.
             await Task.Delay(-1);
