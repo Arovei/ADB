@@ -164,6 +164,7 @@ namespace ADB
                     }
 
                     List<string> definitions = new List<string>();
+                    List<string> examples = new List<string>();
                     string input = (message.Content).Substring(4);
                     UrbanDefine scan = new UrbanDefine();
                     var result = scan.QueryByTerm(input).Result;
@@ -176,9 +177,33 @@ namespace ADB
                     for (int i = 0; i < result.ItemList.Count; i++)
                     {
                         definitions.Add(result.ItemList[i].Definition);
+                        examples.Add(result.ItemList[i].Example);
                     }
-
-                    await message.Channel.SendMessageAsync((message.Author).Mention + ": Top three definitions for: `" + input + "`\n```" + definitions[0] + "```\n```" + definitions[1] + "```\n```" + definitions[2]+"```");
+                    // maybe use try;catch; with HttpException later?
+                    if (examples[0] != "")
+                    {
+                        await message.Channel.SendMessageAsync("Top three definitions for: `" + input + "`\n```" + definitions[0] + "```\n`" + examples[0] + "`");
+                    }
+                    else
+                    {
+                        await message.Channel.SendMessageAsync("Top three definitions for: `" + input + "`\n```" + definitions[0] + "```");
+                    }
+                    if (examples[1] != "")
+                    {
+                        await message.Channel.SendMessageAsync("```" + definitions[1] + "```\n`" + examples[1] + "`");
+                    }
+                    else
+                    {
+                        await message.Channel.SendMessageAsync("```" + definitions[1] + "```");
+                    }
+                    if (examples[2] != "")
+                    {
+                        await message.Channel.SendMessageAsync("```" + definitions[2] + "```\n`" + examples[2] + "`");
+                    }
+                    else
+                    {
+                        await message.Channel.SendMessageAsync("```" + definitions[2] + "```");
+                    }
                 }
             };
 
